@@ -222,6 +222,194 @@
 </body>
 </html>
 
+        }
+
+        #user-photo {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #3b82f6;
+        }
+
+        /* ログイン中のエラー表示用 */
+        #error-message {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff4444;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            z-index: 1000;
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900">
+
+    <div id="error-message"></div>
+
+    <!-- Header -->
+    <header class="fixed w-full z-50 bg-white/95 shadow-sm">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-black text-blue-900 tracking-tighter">
+                RAINBOW <span class="text-blue-500">3026</span>
+            </h1>
+            
+            <nav class="hidden lg:flex space-x-6 font-bold text-sm items-center">
+                <a href="#" class="nav-link text-blue-900">HOME</a>
+                <a href="news.html" class="nav-link text-blue-900">NEWS</a>
+                <a href="schedule.html" class="nav-link text-blue-900">SCHEDULE</a>
+                <a href="ticket.html" class="nav-link text-blue-900">TICKET</a>
+                
+                <div id="auth-area" class="border-l border-gray-200 pl-6 flex items-center">
+                    <button id="login-btn" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition font-bold text-xs">GOOGLE LOGIN</button>
+                    <div id="user-info" class="hidden flex items-center space-x-2">
+                        <img id="user-photo" src="" alt="User">
+                        <button id="logout-btn" class="text-[10px] text-gray-400 hover:text-red-500 font-bold">LOGOUT</button>
+                    </div>
+                </div>
+            </nav>
+
+            <button class="lg:hidden text-blue-900" id="menu-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden bg-blue-900 text-white p-6 lg:hidden">
+            <a href="#" class="block py-3 border-b border-blue-800">HOME</a>
+            <a href="news.html" class="block py-3 border-b border-blue-800">NEWS</a>
+            <a href="schedule.html" class="block py-3 border-b border-blue-800">SCHEDULE</a>
+            <a href="ticket.html" class="block py-3 border-b border-blue-800">TICKET</a>
+            <div class="mt-4">
+                <button id="mobile-login-btn" class="w-full bg-white text-blue-900 py-3 rounded-lg font-bold">GOOGLEでログイン</button>
+                <div id="mobile-user-info" class="hidden text-center py-2">
+                    <p id="mobile-user-name" class="font-bold mb-2"></p>
+                    <button id="mobile-logout-btn" class="text-xs text-blue-300 underline">ログアウト</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero-section pt-48 pb-32 text-white text-center">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl md:text-7xl font-black mb-6 drop-shadow-lg italic">
+                限界を越え、未来を走れ。
+            </h2>
+            <p class="text-lg md:text-2xl mb-12 opacity-90 tracking-widest">レインボーグランプリ 3026</p>
+            <div class="bg-black/40 backdrop-blur-md inline-block px-10 py-6 rounded-2xl border border-white/20 mb-10">
+                <p class="text-xl font-bold text-yellow-400 mb-1">会場：大天国立競技場</p>
+                <p class="text-sm opacity-80">2026.10.24 SAT - 10.25 SUN</p>
+            </div>
+            <div class="block">
+                <a href="ticket.html" class="btn-primary shadow-xl">チケット先行予約</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-blue-950 text-white py-12 text-center">
+        <p class="text-2xl font-black italic mb-4">RAINBOW 3026</p>
+        <p class="text-white/30 text-[10px] tracking-widest">&copy; 2026 RAINBOW GRAND PRIX 3026</p>
+    </footer>
+
+    <!-- Firebase App (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <!-- Firebase Auth (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyD8QXllW3Fzo1oewq72xg3PtYCG36ARaOA",
+            authDomain: "allen-sprint-cloud-data-6ffcf.firebaseapp.com",
+            projectId: "allen-sprint-cloud-data-6ffcf",
+            storageBucket: "allen-sprint-cloud-data-6ffcf.firebasestorage.app",
+            messagingSenderId: "403107535391",
+            appId: "1:403107535391:web:a014dec21619d89844932a",
+            measurementId: "G-NXW1ZP3THR"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const provider = new firebase.auth.GoogleAuthProvider();
+
+        // UI Elements
+        const loginBtn = document.getElementById('login-btn');
+        const mobileLoginBtn = document.getElementById('mobile-login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const mobileLogoutBtn = document.getElementById('mobile-logout-btn');
+        const userInfo = document.getElementById('user-info');
+        const userPhoto = document.getElementById('user-photo');
+        const mobileUserInfo = document.getElementById('mobile-user-info');
+        const mobileUserName = document.getElementById('mobile-user-name');
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const errorMsg = document.getElementById('error-message');
+
+        function showError(text) {
+            errorMsg.textContent = text;
+            errorMsg.style.display = 'block';
+            setTimeout(() => { errorMsg.style.display = 'none'; }, 5000);
+        }
+
+        // Toggle Mobile Menu
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Login Logic
+        async function handleLogin() {
+            console.log("Login attempt started...");
+            try {
+                // ポップアップがブロックされる場合があるため、明示的に呼び出し
+                await auth.signInWithPopup(provider);
+                console.log("Login successful");
+            } catch (error) {
+                console.error("Login error:", error);
+                showError("ログイン失敗: " + error.message);
+            }
+        }
+
+        loginBtn.addEventListener('click', handleLogin);
+        mobileLoginBtn.addEventListener('click', handleLogin);
+
+        // Logout Logic
+        const handleLogout = () => auth.signOut();
+        logoutBtn.addEventListener('click', handleLogout);
+        mobileLogoutBtn.addEventListener('click', handleLogout);
+
+        // Auth State Listener
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                console.log("User logged in:", user.displayName);
+                loginBtn.classList.add('hidden');
+                userInfo.classList.remove('hidden');
+                userPhoto.src = user.photoURL || '';
+                
+                mobileLoginBtn.classList.add('hidden');
+                mobileUserInfo.classList.remove('hidden');
+                mobileUserName.textContent = user.displayName;
+            } else {
+                console.log("User logged out");
+                loginBtn.classList.remove('hidden');
+                userInfo.classList.add('hidden');
+                
+                mobileLoginBtn.classList.remove('hidden');
+                mobileUserInfo.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
+
         .section-title::after {
             content: '';
             position: absolute;
