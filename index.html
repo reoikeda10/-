@@ -15,7 +15,7 @@
 
         /* Hero Section with specific background image */
         .hero-section {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)), 
+            background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), 
                               url('https://lh3.googleusercontent.com/u/0/d/1aS9Jcf0H2_KMB1bbVKY6lbgCFL7qYiH3=w1600-h900-iv1');
             background-size: cover;
             background-position: center;
@@ -24,24 +24,37 @@
 
         .nav-link {
             transition: all 0.3s ease;
+            position: relative;
         }
 
-        .nav-link:hover {
-            color: #fbbf24;
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: #3b82f6;
+            transition: width 0.3s;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
         }
 
         .btn-primary {
             background-color: #fbbf24;
             color: #1e3a8a;
             font-weight: bold;
-            padding: 0.75rem 2rem;
+            padding: 0.75rem 2.5rem;
             border-radius: 9999px;
-            transition: transform 0.2s, background-color 0.2s;
+            transition: all 0.3s;
             display: inline-block;
         }
 
         .btn-primary:hover {
-            transform: scale(1.05);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -10px rgba(251, 191, 36, 0.5);
             background-color: #f59e0b;
         }
 
@@ -56,46 +69,58 @@
             position: absolute;
             bottom: 0;
             left: 0;
-            width: 50px;
+            width: 60px;
             height: 4px;
-            background-color: #3b82f6;
+            background: linear-gradient(to right, #3b82f6, #60a5fa);
+            border-radius: 2px;
         }
 
         #user-photo {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             object-fit: cover;
+            border: 2px solid #3b82f6;
+        }
+
+        .auth-transition {
+            transition: all 0.5s ease;
         }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-900">
+<body class="bg-white text-gray-900">
 
     <!-- Header / Navigation -->
-    <header class="fixed w-full z-50 bg-white shadow-md">
+    <header class="fixed w-full z-50 bg-white/90 backdrop-blur-md shadow-sm">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <h1 class="text-2xl font-black text-blue-900 tracking-tighter">
                 RAINBOW GRAND PRIX <span class="text-blue-500">3026</span>
             </h1>
             
-            <nav class="hidden md:flex space-x-8 font-bold text-sm items-center">
+            <nav class="hidden lg:flex space-x-8 font-bold text-sm items-center">
                 <a href="#" class="nav-link text-blue-900">HOME</a>
                 <a href="news.html" class="nav-link text-blue-900">NEWS</a>
                 <a href="schedule.html" class="nav-link text-blue-900">SCHEDULE</a>
                 <a href="result.html" class="nav-link text-blue-900">RESULT</a>
                 <a href="ticket.html" class="nav-link text-blue-900">TICKET</a>
                 
-                <!-- Login Area -->
-                <div id="auth-area" class="border-l pl-8 flex items-center space-x-4">
-                    <button id="login-btn" class="text-blue-900 hover:text-blue-600 font-bold transition">LOGIN</button>
-                    <div id="user-info" class="hidden flex items-center space-x-2">
-                        <img id="user-photo" src="" alt="">
-                        <button id="logout-btn" class="text-xs text-gray-500 hover:text-red-500 transition">LOGOUT</button>
+                <!-- Auth Container -->
+                <div id="auth-area" class="border-l border-gray-200 pl-8 flex items-center min-w-[120px]">
+                    <button id="login-btn" class="flex items-center space-x-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-full hover:bg-blue-100 transition font-bold">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/></svg>
+                        <span>LOGIN</span>
+                    </button>
+                    <div id="user-info" class="hidden flex items-center space-x-3 auth-transition">
+                        <div class="text-right">
+                            <p id="user-name" class="text-xs font-black text-blue-900 block leading-none"></p>
+                            <button id="logout-btn" class="text-[10px] text-gray-400 hover:text-red-500 transition uppercase font-bold tracking-widest">Sign Out</button>
+                        </div>
+                        <img id="user-photo" src="" alt="User">
                     </div>
                 </div>
             </nav>
 
-            <button class="md:hidden text-blue-900" id="menu-btn">
+            <button class="lg:hidden text-blue-900" id="menu-btn">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
                 </svg>
@@ -103,101 +128,219 @@
         </div>
         
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden bg-blue-900 text-white p-6 md:hidden">
-            <a href="#" class="block py-3">HOME</a>
+        <div id="mobile-menu" class="hidden bg-blue-900 text-white p-6 lg:hidden">
+            <a href="#" class="block py-3 font-bold">HOME</a>
             <a href="news.html" class="block py-3 border-t border-blue-800">NEWS</a>
             <a href="schedule.html" class="block py-3 border-t border-blue-800">SCHEDULE</a>
             <a href="result.html" class="block py-3 border-t border-blue-800">RESULT</a>
-            <a href="ticket.html" class="block py-3 border-t border-blue-800">TICKET</a>
-            <div class="mt-4 pt-4 border-t border-blue-800" id="mobile-auth-area">
-                <button id="mobile-login-btn" class="font-bold">LOGIN</button>
+            <a href="ticket.html" class="block py-3 border-t border-blue-800 border-b">TICKET</a>
+            <div class="mt-6 flex flex-col items-center" id="mobile-auth-area">
+                <button id="mobile-login-btn" class="bg-white text-blue-900 w-full py-3 rounded-lg font-bold flex items-center justify-center space-x-2">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/></svg>
+                    <span>Googleでログイン</span>
+                </button>
+                <div id="mobile-user-info" class="hidden w-full text-center">
+                    <p id="mobile-user-name" class="font-bold mb-2"></p>
+                    <button id="mobile-logout-btn" class="text-sm text-blue-300 underline">ログアウト</button>
+                </div>
             </div>
         </div>
     </header>
 
     <!-- Hero Section -->
-    <section class="hero-section pt-48 pb-32 md:pt-64 md:pb-48 text-white">
+    <section class="hero-section pt-48 pb-32 lg:pt-64 lg:pb-48 text-white">
         <div class="container mx-auto px-6 text-center">
-            <h2 class="text-4xl md:text-7xl font-black mb-6 drop-shadow-lg">
+            <h2 class="text-5xl lg:text-8xl font-black mb-6 drop-shadow-2xl tracking-tighter italic">
                 限界を越え、未来を走れ。
             </h2>
-            <p class="text-xl md:text-2xl mb-10 font-medium drop-shadow-md">
-                レインボーグランプリ 3026
+            <p class="text-xl lg:text-3xl mb-12 font-medium drop-shadow-md opacity-90 tracking-widest">
+                RAINBOW GRAND PRIX 3026
             </p>
-            <div class="bg-black/30 backdrop-blur-sm inline-block px-10 py-6 rounded-xl border border-white/20 mb-12">
-                <p class="text-xl mb-1">会場：<span class="font-bold text-yellow-400">大天国立競技場</span></p>
-                <p class="text-md opacity-90">2026年 10月24日(土) - 25日(日)</p>
+            <div class="bg-black/40 backdrop-blur-md inline-block px-12 py-8 rounded-2xl border border-white/20 mb-12 transform hover:scale-105 transition duration-500">
+                <p class="text-2xl mb-2">会場：<span class="font-bold text-yellow-400">大天国立競技場</span></p>
+                <p class="text-lg opacity-80 font-light">2026.10.24 SAT - 10.25 SUN</p>
             </div>
-            <div>
-                <a href="ticket.html" class="btn-primary shadow-xl">チケット先行予約</a>
+            <div class="block">
+                <a href="ticket.html" class="btn-primary shadow-2xl text-lg">TICKET PRE-ORDER NOW</a>
             </div>
         </div>
     </section>
 
     <!-- Info Section -->
-    <section class="py-20 bg-white">
-        <div class="container mx-auto px-6">
-            <div class="grid md:grid-cols-2 gap-16 items-center">
+    <section class="py-24 bg-white relative overflow-hidden">
+        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-blue-50 rounded-full blur-3xl opacity-50"></div>
+        <div class="container mx-auto px-6 relative">
+            <div class="grid lg:grid-cols-2 gap-20 items-center">
                 <div>
-                    <h3 class="text-3xl font-bold section-title">大会概要</h3>
-                    <p class="mb-8 leading-relaxed text-gray-700 text-lg">
-                        「レインボーグランプリ3026」は、国内最高峰の選手たちが集う陸上競技の祭典です。<br>
+                    <h3 class="text-4xl font-black section-title text-blue-950">ABOUT EVENT</h3>
+                    <p class="mb-10 leading-relaxed text-gray-600 text-lg">
+                        「レインボーグランプリ3026」は、国内最高峰の選手たちが集う陸上競技の祭典です。
                         大天国立競技場という最高の舞台で、アスリートたちがその情熱をぶつけ合います。
+                        時代を超える記録と、記憶に残る一瞬をその目で。
                     </p>
-                    <div class="space-y-5">
-                        <div class="flex items-center">
-                            <div class="w-12 h-12 bg-blue-100 text-blue-600 flex items-center justify-center rounded-full mr-4 shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
-                            </div>
-                            <p class="text-gray-800 font-bold">大天国立競技場（メインスタジアム）</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div class="p-6 bg-gray-50 rounded-xl border-l-4 border-blue-500">
+                            <p class="text-xs text-blue-500 font-bold mb-1 uppercase tracking-wider">Location</p>
+                            <p class="text-gray-900 font-bold">大天国立競技場</p>
                         </div>
-                        <div class="flex items-center">
-                            <div class="w-12 h-12 bg-blue-100 text-blue-600 flex items-center justify-center rounded-full mr-4 shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                </svg>
-                            </div>
-                            <p class="text-gray-800 font-bold">主催：レインボーグランプリ実行委員会</p>
+                        <div class="p-6 bg-gray-50 rounded-xl border-l-4 border-blue-500">
+                            <p class="text-xs text-blue-500 font-bold mb-1 uppercase tracking-wider">Host</p>
+                            <p class="text-gray-900 font-bold">実行委員会事務局</p>
                         </div>
-                        <div class="flex items-center">
-                            <div class="w-12 h-12 bg-blue-100 text-blue-600 flex items-center justify-center rounded-full mr-4 shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                </svg>
-                            </div>
-                            <p class="text-gray-800 font-bold">全24種目（短距離・跳躍・投てき）</p>
+                        <div class="p-6 bg-gray-50 rounded-xl border-l-4 border-blue-500">
+                            <p class="text-xs text-blue-500 font-bold mb-1 uppercase tracking-wider">Events</p>
+                            <p class="text-gray-900 font-bold">全24種目 / 短距離・跳躍等</p>
+                        </div>
+                        <div class="p-6 bg-gray-50 rounded-xl border-l-4 border-blue-500">
+                            <p class="text-xs text-blue-500 font-bold mb-1 uppercase tracking-wider">Category</p>
+                            <p class="text-gray-900 font-bold">日本陸連公認大会</p>
                         </div>
                     </div>
                 </div>
-                <div class="relative group">
-                    <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
-                    <div class="relative bg-white rounded-2xl overflow-hidden shadow-2xl">
-                        <img src="https://lh3.googleusercontent.com/u/0/d/1aS9Jcf0H2_KMB1bbVKY6lbgCFL7qYiH3=w800-h600-iv1" 
-                             alt="大天国立競技場" 
-                             class="w-full h-80 object-cover transform transition duration-500 group-hover:scale-105">
-                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
-                            <p class="text-white font-bold">世界が注目するトラックがここにある。</p>
-                        </div>
-                    </div>
+                <div class="relative">
+                    <div class="absolute -bottom-6 -left-6 w-full h-full bg-blue-600 rounded-2xl -z-10"></div>
+                    <img src="https://lh3.googleusercontent.com/u/0/d/1aS9Jcf0H2_KMB1bbVKY6lbgCFL7qYiH3=w800-h600-iv1" 
+                         alt="Stadium" 
+                         class="rounded-2xl shadow-2xl w-full h-[450px] object-cover">
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Latest News -->
-    <section class="py-20 bg-gray-100">
+    <!-- Footer -->
+    <footer class="bg-blue-950 text-white py-20">
         <div class="container mx-auto px-6">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12">
-                <div>
-                    <h3 class="text-3xl font-bold section-title mb-2">最新ニュース</h3>
-                    <p class="text-gray-500">大会に関する最新情報をお届けします</p>
+            <div class="flex flex-col lg:flex-row justify-between items-start border-b border-white/10 pb-16">
+                <div class="mb-12 lg:mb-0">
+                    <h2 class="text-4xl font-black mb-6 tracking-tighter italic">RAINBOW GRAND PRIX <span class="text-blue-400">3026</span></h2>
+                    <p class="text-white/50 max-w-sm text-sm leading-loose">
+                        限界なき挑戦、彩り豊かな走りを。<br>
+                        大天国立競技場を舞台に繰り広げられる、<br>
+                        最高峰の陸上競技大会公式サイト。
+                    </p>
                 </div>
-                <a href="news.html" class="mt-4 md:mt-0 text-blue-600 hover:text-blue-800 font-bold flex items-center group">
-                    すべてのニュースを見る 
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1 transform group-hover:translate-x-1 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-16 text-sm">
+                    <div class="space-y-4">
+                        <p class="font-black text-blue-400 mb-6 uppercase tracking-[0.2em] text-xs">Menu</p>
+                        <a href="#" class="block text-white/70 hover:text-white transition">HOME</a>
+                        <a href="news.html" class="block text-white/70 hover:text-white transition">NEWS</a>
+                        <a href="ticket.html" class="block text-white/70 hover:text-white transition">TICKET</a>
+                    </div>
+                    <div class="space-y-4">
+                        <p class="font-black text-blue-400 mb-6 uppercase tracking-[0.2em] text-xs">Race Info</p>
+                        <a href="schedule.html" class="block text-white/70 hover:text-white transition">SCHEDULE</a>
+                        <a href="result.html" class="block text-white/70 hover:text-white transition">RESULTS</a>
+                        <a href="#" class="block text-white/70 hover:text-white transition">ACCESS</a>
+                    </div>
+                    <div class="space-y-4 col-span-2 sm:col-span-1">
+                        <p class="font-black text-blue-400 mb-6 uppercase tracking-[0.2em] text-xs">Office</p>
+                        <p class="text-white/70 leading-relaxed font-light italic">
+                            Rainbow GP 3026 Secretariat<br>
+                            TEL: 03-XXXX-XXXX
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 flex flex-col sm:flex-row justify-between items-center opacity-30 text-[10px] tracking-widest font-bold">
+                <p>&copy; 2026 RAINBOW GRAND PRIX 3026</p>
+                <div class="flex space-x-6 mt-4 sm:mt-0 uppercase">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        // Firebase Configuration (from your project)
+        const firebaseConfig = {
+            apiKey: "AIzaSyD8QXllW3Fzo1oewq72xg3PtYCG36ARaOA",
+            authDomain: "allen-sprint-cloud-data-6ffcf.firebaseapp.com",
+            projectId: "allen-sprint-cloud-data-6ffcf",
+            storageBucket: "allen-sprint-cloud-data-6ffcf.firebasestorage.app",
+            messagingSenderId: "403107535391",
+            appId: "1:403107535391:web:a014dec21619d89844932a",
+            measurementId: "G-NXW1ZP3THR"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        // UI Elements
+        const loginBtn = document.getElementById('login-btn');
+        const mobileLoginBtn = document.getElementById('mobile-login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const mobileLogoutBtn = document.getElementById('mobile-logout-btn');
+        
+        const userInfo = document.getElementById('user-info');
+        const userName = document.getElementById('user-name');
+        const userPhoto = document.getElementById('user-photo');
+        
+        const mobileUserInfo = document.getElementById('mobile-user-info');
+        const mobileUserName = document.getElementById('mobile-user-name');
+        
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        // Toggle Mobile Menu
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Login Logic
+        const handleLogin = async () => {
+            try {
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                console.error("Login failed:", error);
+                if (error.code !== 'auth/popup-closed-by-user') {
+                    alert("ログイン中にエラーが発生しました。");
+                }
+            }
+        };
+
+        loginBtn.addEventListener('click', handleLogin);
+        mobileLoginBtn.addEventListener('click', handleLogin);
+
+        // Logout Logic
+        const handleLogout = () => signOut(auth);
+        logoutBtn.addEventListener('click', handleLogout);
+        mobileLogoutBtn.addEventListener('click', handleLogout);
+
+        // Auth State Listener
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Desktop
+                loginBtn.classList.add('hidden');
+                userInfo.classList.remove('hidden');
+                userName.textContent = user.displayName;
+                userPhoto.src = user.photoURL || '';
+                
+                // Mobile
+                mobileLoginBtn.classList.add('hidden');
+                mobileUserInfo.classList.remove('hidden');
+                mobileUserName.textContent = user.displayName;
+            } else {
+                // Desktop
+                loginBtn.classList.remove('hidden');
+                userInfo.classList.add('hidden');
+                
+                // Mobile
+                mobileLoginBtn.classList.remove('hidden');
+                mobileUserInfo.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
+
+ viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
                 </a>
